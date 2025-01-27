@@ -53,3 +53,59 @@ export const createContent = async (req: Request, res: Response): Promise<void> 
     });
   }
 }
+
+export const getAllContent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const contents = await Content.find({
+      // @ts-ignore
+      userId: req.userId,
+    })
+      .populate("userId", "username")
+      .populate("tags", "title");
+
+    res.status(200).json({
+      contents,
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message: "failed to fetch contents",
+    })
+  }
+}
+
+export const deleteContent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { contentId } = req.params;
+
+    if (!contentId) {
+      res.status(400).json({
+        message: "contentId is required",
+      });
+      return;
+    }
+
+    const content = await Content.findOne({
+      _id: contentId,
+      // @ts-ignore
+      userId: req.userId,
+    });
+
+    if (!content) {
+      res.status(404).json({
+        message: "Content not found",
+      });
+      return;
+    }
+    await content.deleteOne();
+
+    res.status(200).json({
+      message: "content deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "failed to delete content",
+    });
+  }
+}
