@@ -1,17 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-// interface JwtPayloadWithUserId extends jwt.JwtPayload {
-//   userId: string;
-// }
 
-export const protectRoute = (req: Request, res: Response, next: NextFunction) => {
+export const protectRoute = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({
+    res.status(401).json({
       message: "Authorization header is missing or invalid"
     });
+    return;
   }
 
   const token = authHeader.split(' ')[1];
@@ -23,7 +21,7 @@ export const protectRoute = (req: Request, res: Response, next: NextFunction) =>
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    return res.status(400).json({
+    res.status(400).json({
       message: "Invalid token"
     });
   }
