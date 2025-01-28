@@ -5,7 +5,6 @@ import crypto from "crypto";
 import Content from "../models/content.model";
 
 export const shareLink = async (req: Request, res: Response): Promise<void> => {
-  // Validate input data
   const result = shareSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({
@@ -22,7 +21,6 @@ export const shareLink = async (req: Request, res: Response): Promise<void> => {
       //@ts-ignore
       const userId = req.userId;
 
-      // Check if user has content
       const content = await Content.findOne({ userId });
       if (!content) {
         res.status(200).json({
@@ -31,10 +29,8 @@ export const shareLink = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      // Generate a new hash based on the user ID and current timestamp
       const hash = crypto.createHash("sha256").update(userId + Date.now()).digest("hex");
 
-      // Create or update the link with the generated hash
       const linkCreated = await Link.findOneAndUpdate(
         { userId },
         { hash, userId },
@@ -50,7 +46,6 @@ export const shareLink = async (req: Request, res: Response): Promise<void> => {
       //@ts-ignore
       const userId = req.userId;
 
-      // If share is false, delete the existing link
       await Link.deleteOne({ userId });
 
       res.status(200).json({
