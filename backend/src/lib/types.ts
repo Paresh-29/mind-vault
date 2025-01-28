@@ -34,3 +34,13 @@ export const contentSchema = z.object({
     .min(1, { message: "At least one tag is required" })
     .max(5, { message: "Maximum 5 tags allowed" })
 });
+
+
+export const shareSchema = z.object({
+  share: z.boolean({
+    required_error: "share field is required",
+    invalid_type_error: "share field must be a boolean "
+  })
+});
+
+export type ShareInput = z.infer<typeof shareSchema>;
