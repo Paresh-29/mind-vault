@@ -1,5 +1,8 @@
 import mongoose, { model } from "mongoose";
 
+interface ITag extends mongoose.Document {
+  title: string;
+}
 
 export const tagSchema = new mongoose.Schema({
   title: {
@@ -10,5 +13,5 @@ export const tagSchema = new mongoose.Schema({
   }
 });
 
-const Tag = model("Tag", tagSchema);
+const Tag = model<ITag>("Tag", tagSchema);
 export default Tag;

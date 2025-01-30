@@ -91,3 +91,10 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     });
   }
 };
+
+
+export const checkAuth = async (req: Request, res: Response): Promise<void> => {
+  // @ts-ignore
+  const user = await User.findById(req.userId).select("-password");
+  res.json(user);
+}

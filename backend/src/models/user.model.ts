@@ -1,5 +1,10 @@
 import mongoose, { model } from "mongoose";
 
+interface IUser extends mongoose.Document {
+  username: string;
+  password: string;
+}
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -14,5 +19,5 @@ const userSchema = new mongoose.Schema({
 });
 
 
-const User = model("User", userSchema);
+const User = model<IUser>("User", userSchema);
 export default User;
