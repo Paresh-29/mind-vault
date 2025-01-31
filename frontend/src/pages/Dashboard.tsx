@@ -1,66 +1,97 @@
 import { useState } from "react";
 import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
 import PlusIcon from "../icons/Plusicon";
 import Shareicon from "../icons/Shareicon";
 import CreateModalContent from "../components/CreateContentModal";
 import useContent from "../hooks/useContent";
+import { Sidebar } from "../components/Sidebar";
+import Loader from "../components/Loader";
+import { Card } from "../components/ui/Card";
 
 const Dashboard = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { content, loading, error, refreshContent } = useContent();
+const [isModalOpen, setIsModalOpen] = useState(false);
+const { content, loading, error, refreshContent, deleteContent } =
+useContent();
 
-  const handleContentAdded = () => {
-    setIsModalOpen(false);
-    refreshContent();
-  };
+const handleContentAdded = () => {
+setIsModalOpen(false);
+refreshContent();
+};
 
-  console.log("Dashboard Content:", content); // Debugging
+const EmptyState = () => (
+<div className="mt-32 text-center">
+	<p className="text-gray-500 text-lg">
+		No notes yet. Start by adding some content!
+	</p>
+	<Button className="mt-4" icon={<PlusIcon />}
+	onClick={() => setIsModalOpen(true)}
+	>
+	Add Content
+	</Button>
+</div>
+);
 
-  return (
-    <div className="p-4">
-      <div className="flex justify-end gap-4">
-        <Button icon={<PlusIcon />} onClick={() => setIsModalOpen(true)}>
-          Add Content
-        </Button>
-        <Button variant="secondary" icon={<Shareicon />}>
-          Share brain
-        </Button>
-      </div>
+return (
+<div className="flex min-h-screen bg-gray-50">
+	<Sidebar />
 
-      {loading && (
-        <div className="flex justify-center items-center mt-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        </div>
-      )}
+	{/* Main Content */}
+	<main className="flex-1 ml-64 transition-all duration-300">
+		<div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+			{/* Header */}
+			<div className="flex items-center justify-between mb-6">
+				<h1 className="text-2xl font-semibold text-gray-900">All Notes</h1>
+				<div className="flex items-center gap-3">
+					<Button variant="secondary"
+						className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg">
+						<Shareicon className="w-4 h-4" />
+						Share Brain
+					</Button>
+					<Button
+						className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg"
+						onClick={()=> setIsModalOpen(true)}
+						>
+						<PlusIcon className="w-4 h-4" />
+						Add Content
+					</Button>
+				</div>
+			</div>
 
-      {error && (
-        <div className="mt-8 p-4 bg-red-50 border border-red-200 text-red-600 rounded-md">
-          {error}
-        </div>
-      )}
+			{/* Content */}
+			<div className="min-h-[calc(100vh-140px)]">
+				{loading && (
+				<div className="flex justify-center items-center h-64">
+					<Loader className="w-8 h-8 text-indigo-600" />
+				</div>
+				)}
 
-      {!loading && !error && content.length > 0 && (
-        <div className="flex gap-4 flex-wrap">
-          {content?.map((item) => (
-            <Card
-              key={item._id}
-              type={item.type}
-              title={item.title}
-              link={item.link}
-            // tags={item.tags}
-            />
-          ))}
-        </div>
-      )}
+				{error && (
+				<div className="bg-red-50 text-red-600 p-4 rounded-lg">
+					{error}
+				</div>
+				)}
 
-      <CreateModalContent
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={handleContentAdded}
-      />
-    </div>
-  );
+				{!loading && !error && content.length === 0 &&
+				<EmptyState />}
+
+				{!loading && !error && content.length > 0 && (
+				<div
+					className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center">
+					{content?.map((item) => (
+					<Card key={item._id} id={item._id} type={item.type} title={item.title} link={item.link}
+						tags={item.tags} createdAt={item.createdAt} deleteContent={deleteContent} />
+					))}
+				</div>
+				)}
+			</div>
+		</div>
+
+		<CreateModalContent isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}
+			onSuccess={handleContentAdded}
+			/>
+	</main>
+</div>
+);
 };
 
 export default Dashboard;
