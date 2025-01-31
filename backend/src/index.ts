@@ -9,7 +9,12 @@ import cors from "cors";
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+	origin: "http://localhost:5173", // Change to your frontend URL
+	methods: ["GET", "POST", "PUT", "DELETE"],
+	allowedHeaders: ["Authorization", "Content-Type"],
+	credentials: true
+}));
 
 
 
@@ -19,6 +24,6 @@ app.use("/api/v1/brain", shareRoute);
 
 
 app.listen(3000, () => {
-  console.log("server listening on port 3000");
-  connectDB();
+	console.log("server listening on port 3000");
+	connectDB();
 });
