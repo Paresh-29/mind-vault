@@ -39,7 +39,7 @@ export const shareLink = async (req: Request, res: Response): Promise<void> => {
 
       res.status(200).json({
         message: `Share link enabled for user ${linkCreated.userId}`,
-        link: `http://localhost:3000/api/v1/share/${linkCreated.hash}`, // Provide the full link
+        link: `http://localhost:3000/api/v1/brain/${linkCreated.hash}`, // Provide the full link to the frontend
       });
       return;
     } else {
