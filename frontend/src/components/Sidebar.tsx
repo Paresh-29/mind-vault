@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { SidebarItems } from "./SidebarItems";
 import { Logo } from "./ui/Logo";
 import { TwitterIcon } from "./ui/Twitter";
@@ -6,30 +6,30 @@ import { YoutubeIcon } from "./ui/Youtube";
 import { FileText, Hash, LinkIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SidebarProps {
-  isCollapsed: boolean;
-  setIsCollapsed: (collapsed: boolean) => void;
   activeFilter: string;
   onFilterChange: (filter: string) => void;
 }
 
 export const Sidebar = ({
-  isCollapsed,
-  setIsCollapsed,
   activeFilter,
   onFilterChange
 }: SidebarProps) => {
-  // Handle auto-collapse on mobile screens
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setIsCollapsed(true);
-      }
-    };
 
-    handleResize(); // Check on mount
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [setIsCollapsed]);
+	const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+		const handleMediaChange = (event: MediaQueryListEvent | MediaQueryList) => {
+			setIsCollapsed(event.matches);
+		};
+
+		handleMediaChange(mediaQuery);
+
+		mediaQuery.addEventListener("change", handleMediaChange);
+		
+		return () => mediaQuery.removeEventListener("change", handleMediaChange);
+	})
 
   const navigationItems = [
     {
@@ -48,8 +48,8 @@ export const Sidebar = ({
       icon: <YoutubeIcon className="w-5 h-5" />
     },
     {
-      id: 'document',
-      text: 'Documents',
+      id: 'article',
+      text: 'Articles',
       icon: <FileText className="w-5 h-5" />
     },
     {
@@ -61,7 +61,7 @@ export const Sidebar = ({
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-100 transition-all duration-300 z-20 ${isCollapsed ? "w-16" : "w-64"
+      className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-100 transition-all duration-300 z-20 ${isCollapsed ? "w-16" : "w-48"
         }`}
     >
       <div className="flex h-full flex-col p-4">
