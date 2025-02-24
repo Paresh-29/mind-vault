@@ -3,8 +3,10 @@ import { contentSchema } from "../lib/types";
 import Content from "../models/content.model";
 import Tag from "../models/tag.model";
 
-
-export const createContent = async (req: Request, res: Response): Promise<void> => {
+export const createContent = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const result = contentSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -18,46 +20,45 @@ export const createContent = async (req: Request, res: Response): Promise<void> 
   const { link, title, type, tags } = result.data;
 
   try {
-
     const tagDocuments = await Promise.all(
       tags.map(async (tagTitle: string) => {
         const tag = await Tag.findOneAndUpdate(
           { title: tagTitle },
           { title: tagTitle },
-          { upsert: true, new: true }
+          { upsert: true, new: true },
         );
         return tag._id;
-      })
+      }),
     );
-
 
     const newContent = await Content.create({
       link,
       title,
       type,
       tags: tagDocuments,
-      // @ts-ignore
       userId: req.userId,
-    })
+    });
 
     const populatedContent = await newContent.populate("tags");
 
     res.status(201).json({
       message: "Content created successfully",
       content: populatedContent,
-    })
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "failed to create content",
     });
   }
-}
+};
 
-export const getAllContent = async (req: Request, res: Response): Promise<void> => {
+export const getAllContent = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const contents = await Content.find({
-      // @ts-ignore
       userId: req.userId,
     })
       .populate("userId", "username")
@@ -65,16 +66,19 @@ export const getAllContent = async (req: Request, res: Response): Promise<void> 
 
     res.status(200).json({
       contents,
-    })
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
       message: "failed to fetch contents",
-    })
+    });
   }
-}
+};
 
-export const deleteContent = async (req: Request, res: Response): Promise<void> => {
+export const deleteContent = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const { contentId } = req.params;
 
@@ -87,7 +91,6 @@ export const deleteContent = async (req: Request, res: Response): Promise<void> 
 
     const content = await Content.findOne({
       _id: contentId,
-      // @ts-ignore
       userId: req.userId,
     });
 
@@ -108,4 +111,4 @@ export const deleteContent = async (req: Request, res: Response): Promise<void> 
       message: "failed to delete content",
     });
   }
-}
+};

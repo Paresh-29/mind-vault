@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { authSchema } from '../lib/types';
-import User from '../models/user.model';
-import bcrypt from 'bcrypt';
+import { Request, Response } from "express";
+import { authSchema } from "../lib/types";
+import User from "../models/user.model";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
@@ -9,7 +9,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
   if (!result.success) {
     res.status(411).json({
-      message: 'Errors in input',
+      message: "Errors in input",
       errors: result.error.errors,
     });
     return;
@@ -21,7 +21,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       res.status(403).json({
-        message: 'Username already exists',
+        message: "Username already exists",
       });
       return;
     }
@@ -37,17 +37,16 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     await newUser.save();
 
     res.status(200).json({
-      message: 'User created successfully',
+      message: "User created successfully",
       user: { username },
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      error: 'Internal server error',
+      error: "Internal server error",
     });
   }
 };
-
 
 export const login = async (req: Request, res: Response): Promise<Response> => {
   const result = authSchema.safeParse(req.body);
@@ -59,7 +58,10 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     });
   }
 
-  const { username, password } = result.data as { username: string; password: string };
+  const { username, password } = result.data as {
+    username: string;
+    password: string;
+  };
 
   try {
     const user = await User.findOne({ username });
@@ -78,7 +80,10 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || "default_secret");
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || "default_secret",
+    );
 
     return res.status(200).json({
       message: "User logged in successfully",
@@ -92,9 +97,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-
 export const checkAuth = async (req: Request, res: Response): Promise<void> => {
-  // @ts-ignore
   const user = await User.findById(req.userId).select("-password");
   res.json(user);
-}
+};

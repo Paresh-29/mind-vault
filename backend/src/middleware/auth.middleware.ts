@@ -1,28 +1,34 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
+interface AuthRequest extends Request {
+  userId?: string;
+}
 
-export const protectRoute = (req: Request, res: Response, next: NextFunction): void => {
-  const authHeader = req.headers['authorization'];
+export const protectRoute = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
+  const authHeader = req.headers["authorization"];
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({
-      message: "Authorization header is missing or invalid"
+      message: "Authorization header is missing or invalid",
     });
     return;
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
-    // @ts-ignore
-    req.userId = decoded.userId;
+    req.userId = decoded.userId as string;
     next();
   } catch (error) {
     res.status(400).json({
-      message: "Invalid token"
+      message: "Invalid token",
     });
   }
 };
