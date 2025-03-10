@@ -3,60 +3,75 @@ import { SidebarItems } from "./SidebarItems";
 import { Logo } from "./ui/Logo";
 import { TwitterIcon } from "./ui/Twitter";
 import { YoutubeIcon } from "./ui/Youtube";
-import { FileText, Hash, LinkIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  FileText,
+  Hash,
+  LinkIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 interface SidebarProps {
   activeFilter: string;
   onFilterChange: (filter: string) => void;
 }
 
-export const Sidebar = ({
-  activeFilter,
-  onFilterChange
-}: SidebarProps) => {
+export const Sidebar = ({ activeFilter, onFilterChange }: SidebarProps) => {
+  // const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
+  //
+  // useEffect(() => {
+  //   const mediaQuery = window.matchMedia("(max-width: 768px)");
+  //
+  //   const handleMediaChange = (event: MediaQueryListEvent | MediaQueryList) => {
+  //     setIsCollapsed(event.matches);
+  //   };
+  //
+  //   handleMediaChange(mediaQuery);
+  //
+  //   mediaQuery.addEventListener("change", handleMediaChange);
+  //
+  //   return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  // }, []);
 
-	const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 768);
+  const [isCollapsed, setIsCollapsed] = useState(
+    () => window.matchMedia("(max-width: 786px)").matches,
+  );
 
-	useEffect(() => {
-		const mediaQuery = window.matchMedia("(max-width: 768px)");
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 786px)");
 
-		const handleMediaChange = (event: MediaQueryListEvent | MediaQueryList) => {
-			setIsCollapsed(event.matches);
-		};
+    const handleMediaChange = () => setIsCollapsed(mediaQuery.matches);
 
-		handleMediaChange(mediaQuery);
-
-		mediaQuery.addEventListener("change", handleMediaChange);
-		
-		return () => mediaQuery.removeEventListener("change", handleMediaChange);
-	})
+    mediaQuery.addEventListener("change", handleMediaChange);
+    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+  }, []);
 
   const navigationItems = [
     {
-      id: 'all',
-      text: 'All Content',
-      icon: <Hash className="w-5 h-5" />
+      id: "all",
+      text: "All Content",
+      icon: <Hash className="w-5 h-5" />,
     },
     {
-      id: 'twitter',
-      text: 'Tweets',
-      icon: <TwitterIcon className="w-5 h-5" />
+      id: "twitter",
+      text: "Tweets",
+      icon: <TwitterIcon className="w-5 h-5" />,
     },
     {
-      id: 'youtube',
-      text: 'Videos',
-      icon: <YoutubeIcon className="w-5 h-5" />
+      id: "youtube",
+      text: "Videos",
+      icon: <YoutubeIcon className="w-5 h-5" />,
     },
     {
-      id: 'article',
-      text: 'Articles',
-      icon: <FileText className="w-5 h-5" />
+      id: "article",
+      text: "Articles",
+      icon: <FileText className="w-5 h-5" />,
     },
     {
-      id: 'link',
-      text: 'Links',
-      icon: <LinkIcon className="w-5 h-5" />
-    }
+      id: "link",
+      text: "Links",
+      icon: <LinkIcon className="w-5 h-5" />,
+    },
   ];
 
   return (
