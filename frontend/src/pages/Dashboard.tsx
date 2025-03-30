@@ -13,16 +13,88 @@ import { useRecoilValue } from "recoil";
 import { authState } from "../state/atom";
 import LogoutIcon from "../icons/LogoutIcon";
 
+const Navbar = ({
+  activeFilter,
+  onAddContent,
+  onShare,
+  onLogout,
+  isAuthenticated,
+  isSidebarCollapsed,
+}) => {
+  console.log(
+    "Navbar rendering with activeFilter:",
+    activeFilter,
+    "isSidebarCollapsed:",
+    isSidebarCollapsed,
+  );
+  return (
+    <header className="bg-white border-b border-gray-100 p-4 fixed top-0 left-0 right-0 z-20">
+      <div
+        className={`max-w-[1920px] mx-auto flex items-center gap-4 ${isSidebarCollapsed ? "pl-16" : "pl-48"} transition-all duration-300`}
+      >
+        <h1 className="text-2xl font-semibold text-gray-900 min-w-0 truncate">
+          {activeFilter === "all"
+            ? "All Notes"
+            : activeFilter === "twitter"
+              ? "Tweets"
+              : activeFilter === "youtube"
+                ? "Videos"
+                : activeFilter === "article"
+                  ? "Articles"
+                  : activeFilter === "link"
+                    ? "Links"
+                    : "Unknown"}
+        </h1>
+        <div className="ml-auto flex items-center gap-3">
+          <Button
+            variant="secondary"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg"
+            onClick={onShare}
+          >
+            <Shareicon className="w-4 h-4" />
+            Share Brain
+          </Button>
+          <Button
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg"
+            onClick={onAddContent}
+          >
+            <PlusIcon className="w-4 h-4" />
+            Add Content
+          </Button>
+          {isAuthenticated && (
+            <button
+              className="p-2 text-gray-900 hover:text-red-600 transition-colors"
+              onClick={onLogout}
+              aria-label="Logout"
+            >
+              <LogoutIcon className="w-6 h-6" />
+            </button>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
 const Dashboard = () => {
   const { isAuthenticated } = useRecoilValue(authState);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    () => window.matchMedia("(max-width: 768px)").matches,
+  );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
   const logout = useLogout();
 
-  // Filter content based on active filter
+  console.log(
+    "Dashboard activeFilter:",
+    activeFilter,
+    "isSidebarCollapsed:",
+    isSidebarCollapsed,
+  );
+
   const filteredContent = useMemo(() => {
     if (activeFilter === "all") return content;
     return content.filter((item) => item.type === activeFilter);
@@ -35,7 +107,7 @@ const Dashboard = () => {
 
   const EmptyState = () => (
     <div className="mt-32 text-center">
-      <p className="text-gray-500 text-lg">
+      <p className="text-lg text-gray-500">
         {activeFilter === "all"
           ? "No notes yet. Start by adding some content!"
           : `No ${activeFilter} content found. Try adding some!`}
@@ -51,97 +123,62 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar activeFilter={activeFilter} onFilterChange={setActiveFilter} />
-
-      <main className="flex-1 transition-all duration-300 ml-16 md:ml-64 ">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              {activeFilter === "all"
-                ? "All Notes"
-                : `${activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}s`}
-            </h1>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="secondary"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg"
-                onClick={() => setIsShareModalOpen(true)}
-              >
-                <Shareicon className="w-4 h-4" />
-                Share Brain
-              </Button>
-              <Button
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-lg"
-                onClick={() => setIsModalOpen(true)}
-              >
-                <PlusIcon className="w-4 h-4" />
-                Add Content
-              </Button>
-              {isAuthenticated && (
-                <div
-                  className="cursor-pointer hover: text-red-600 transition-all ml-3"
-                  onClick={logout}
-                >
-                  <LogoutIcon className="w-6 h-6 text-gray-900" />
-                </div>
-              )}
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <Navbar
+        activeFilter={activeFilter}
+        onAddContent={() => setIsModalOpen(true)}
+        onShare={() => setIsShareModalOpen(true)}
+        onLogout={logout}
+        isAuthenticated={isAuthenticated}
+        isSidebarCollapsed={isSidebarCollapsed}
+      />
+      <div className="flex flex-1 pt-14">
+        <Sidebar
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
+        />
+        <main
+          className={`flex-1 p-6 ${isSidebarCollapsed ? "ml-16" : "ml-48"} transition-all duration-300`}
+        >
+          {loading && (
+            <div className="flex justify-center items-center h-64">
+              <Loader className="w-8 h-8 text-indigo-600" />
             </div>
-          </div>
-
-          {/* Content */}
-          <div className="min-h-[calc(100vh-140px)]">
-            {loading && (
-              <div className="flex flex-col justify-center items-center h-64">
-                <Loader className="w-8 h-8 text-indigo-600" />
-              </div>
-            )}
-
-            {error && (
-              <div className="bg-red-50 text-red-600 p-4 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            {!loading && !error && filteredContent.length === 0 && (
-              <EmptyState />
-            )}
-
-            {!loading && !error && filteredContent.length > 0 && (
-              <div className="flex justify-center">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center">
-                  {filteredContent.map((item) => (
-                    <Card
-                      key={item._id}
-                      id={item._id}
-                      type={item.type}
-                      title={item.title}
-                      link={item.link}
-                      tags={item.tags}
-                      createdAt={item.createdAt}
-                      deleteContent={deleteContent}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <CreateModalContent
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onSuccess={handleContentAdded}
-        />
-
-        {/* Share Brain Modal */}
-        <ShareBrainModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          itemCount={filteredContent.length}
-        />
-      </main>
+          )}
+          {error && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-lg">{error}</div>
+          )}
+          {!loading && !error && filteredContent.length === 0 && <EmptyState />}
+          {!loading && !error && filteredContent.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 justify-items-center">
+              {filteredContent.map((item) => (
+                <Card
+                  key={item._id}
+                  id={item._id}
+                  type={item.type}
+                  title={item.title}
+                  link={item.link}
+                  tags={item.tags}
+                  createdAt={item.createdAt}
+                  deleteContent={deleteContent}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+      <CreateModalContent
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={handleContentAdded}
+      />
+      <ShareBrainModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        itemCount={filteredContent.length}
+      />
     </div>
   );
 };
