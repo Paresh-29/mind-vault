@@ -25,25 +25,27 @@ const Navbar = ({
     "Navbar rendering with activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed,
+    isSidebarCollapsed
   );
   return (
     <header className="bg-white border-b border-gray-100 p-4 fixed top-0 left-0 right-0 z-20">
       <div
-        className={`max-w-[1920px] mx-auto flex items-center gap-4 ${isSidebarCollapsed ? "pl-16" : "pl-48"} transition-all duration-300`}
+        className={`max-w-[1920px] mx-auto flex items-center gap-4 ${
+          isSidebarCollapsed ? "pl-16" : "pl-48"
+        } transition-all duration-300`}
       >
         <h1 className="text-2xl font-semibold text-gray-900 min-w-0 truncate">
           {activeFilter === "all"
             ? "All Notes"
             : activeFilter === "twitter"
-              ? "Tweets"
-              : activeFilter === "youtube"
-                ? "Videos"
-                : activeFilter === "article"
-                  ? "Articles"
-                  : activeFilter === "link"
-                    ? "Links"
-                    : "Unknown"}
+            ? "Tweets"
+            : activeFilter === "youtube"
+            ? "Videos"
+            : activeFilter === "article"
+            ? "Articles"
+            : activeFilter === "link"
+            ? "Links"
+            : "Unknown"}
         </h1>
         <div className="ml-auto flex items-center gap-3">
           <Button
@@ -82,7 +84,7 @@ const Dashboard = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
-    () => window.matchMedia("(max-width: 768px)").matches,
+    () => window.matchMedia("(max-width: 768px)").matches
   );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
@@ -92,7 +94,7 @@ const Dashboard = () => {
     "Dashboard activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed,
+    isSidebarCollapsed
   );
 
   const filteredContent = useMemo(() => {
@@ -123,7 +125,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="flex flex-col h-full">
       <Navbar
         activeFilter={activeFilter}
         onAddContent={() => setIsModalOpen(true)}
@@ -132,7 +134,7 @@ const Dashboard = () => {
         isAuthenticated={isAuthenticated}
         isSidebarCollapsed={isSidebarCollapsed}
       />
-      <div className="flex flex-1 pt-14">
+      <div className="flex flex-1 overflow-hidden pt-14">
         <Sidebar
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
@@ -140,7 +142,9 @@ const Dashboard = () => {
           setIsCollapsed={setIsSidebarCollapsed}
         />
         <main
-          className={`flex-1 p-6 ${isSidebarCollapsed ? "ml-16" : "ml-48"} transition-all duration-300`}
+          className={`flex-1 overflow-y-auto p-6 ${
+            isSidebarCollapsed ? "ml-16" : "ml-48"
+          } transition-all duration-300`}
         >
           {loading && (
             <div className="flex justify-center items-center h-64">
