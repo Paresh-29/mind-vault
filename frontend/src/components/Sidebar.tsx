@@ -58,7 +58,7 @@ export const Sidebar = ({
 
   return (
     <aside
-      className={`fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-700 transition-all duration-300 z-10 shadow-md ${
+      className={`fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 transition-all duration-300 z-10 shadow-md ${
         isCollapsed ? "w-16" : "w-52"
       }`}
     >
@@ -97,11 +97,13 @@ export const Sidebar = ({
         </nav>
 
         <button
-          className={`mt-auto mx-auto flex items-center justify-center 
-            bg-gradient-to-r from-indigo-500 to-purple-600 
-            text-white rounded-full p-2 shadow-lg 
+          className={`mt-auto mx-auto flex items-center justify-center
+            bg-gradient-to-r from-indigo-500 to-purple-600
+            text-white rounded-full p-2 shadow-lg
             hover:shadow-indigo-500/20 hover:scale-105
-            transition-all duration-300 ${isCollapsed ? "w-10 h-10" : "w-full"}`}
+            transition-all duration-300 ${
+              isCollapsed ? "w-10 h-10" : "w-full"
+            }`}
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           {isCollapsed ? (
