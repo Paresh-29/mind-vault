@@ -12,7 +12,7 @@ import useLogout from "../hooks/useLogout";
 import { useRecoilValue } from "recoil";
 import { authState } from "../state/atom";
 import LogoutIcon from "../icons/LogoutIcon";
-import { ThemeToggle } from "../components/ThemeTogggle";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { div } from "framer-motion/client";
 
 const Navbar = ({

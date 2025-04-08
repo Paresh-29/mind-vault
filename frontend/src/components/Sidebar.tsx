@@ -63,7 +63,7 @@ export const Sidebar = ({
       }`}
     >
       <div className="flex h-full flex-col p-4">
-        <div className="flex items-center gap-2 h-14 pb-2 border-b dark:border-gray-700">
+        <div className="flex items-center pt-2.5 sm:pt-5 gap-2 h-14 pb-2 border-b dark:border-gray-700">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="flex items-center gap-2 group transition-all"
@@ -72,9 +72,9 @@ export const Sidebar = ({
               <Logo className="w-7 h-7 flex-shrink-0 text-white" />
             </div>
             {!isCollapsed && (
-              <span className="text-xl font-bold text-gray-900 dark:text-gray-50 truncate flex items-center gap-1">
+              <span className="text-xl font-bold text-gray-900 dark:text-gray-50 truncate flex items-center gap-1 ">
                 Second Brain
-                <Sparkles className="w-4 h-4 text-amber-400" />
+                {/* <Sparkles className="w-4 h-4 text-amber-400" /> */}
               </span>
             )}
           </button>
@@ -102,7 +102,7 @@ export const Sidebar = ({
             text-white rounded-full p-2 shadow-lg
             hover:shadow-indigo-500/20 hover:scale-105
             transition-all duration-300 ${
-              isCollapsed ? "w-10 h-10" : "w-full"
+              isCollapsed ? "w-10 h-10" : "w-12 h-12"
             }`}
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
@@ -111,7 +111,7 @@ export const Sidebar = ({
           ) : (
             <div className="flex items-center">
               <ChevronLeft className="w-5 h-5 text-white" />
-              <span className="ml-1 text-sm font-medium">Collapse</span>
+              {/* <span className="ml-1 text-sm font-medium">Collapse</span> */}
             </div>
           )}
         </button>

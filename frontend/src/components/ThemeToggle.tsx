@@ -13,7 +13,7 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={handleThemeToggle}
-      className="p-2 rounded-full hover:bg-gray-200  dark:hover:bg-gray-700 transition-colors"
+      className="p-2 rounded-full hover:bg-gray-200  dark:hover:bg-gray-700 transition-colors hidden sm:flex items-center justify-center"
       aria-label={`Toggle ${theme === "light" ? "dark" : "light"} mode`}
     >
       {theme === "light" ? (

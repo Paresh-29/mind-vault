@@ -12,6 +12,8 @@ import { authState } from "./state/atom";
 import { SharedBrainView } from "./components/SharedBrainView";
 import "./index.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
+// import { Home } from "lucide-react";
+import { TypewriterEffectSmoothDemo } from "./pages/HomePage";
 
 function AppWrapper() {
   return (
@@ -33,11 +35,31 @@ function App() {
           <Route
             path="/"
             element={
-              auth.isAuthenticated ? <Dashboard /> : <Navigate to="/signin" />
+              auth.isAuthenticated ? (
+                <Dashboard />
+              ) : (
+                <TypewriterEffectSmoothDemo />
+              )
             }
           />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/dashboard"
+            element={
+              auth.isAuthenticated ? (
+                <Dashboard />
+              ) : (
+                <TypewriterEffectSmoothDemo />
+              )
+            }
+          />
+          <Route
+            path="/signin"
+            element={auth.isAuthenticated ? <Dashboard /> : <Signin />}
+          />
+          <Route
+            path="/signup"
+            element={auth.isAuthenticated ? <Dashboard /> : <Signup />}
+          />
           <Route path="/brain/:shareLink" element={<SharedBrainView />} />
         </Routes>
       </Router>

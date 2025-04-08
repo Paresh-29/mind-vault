@@ -56,7 +56,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       setFormData({
@@ -77,7 +77,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md relative"
+        className="bg-gray-200 border border-gray-300 dark:border-gray-700 dark:bg-gray-900 rounded-lg p-6 w-full max-w-md relative"
       >
         <button
           onClick={onClose}
@@ -196,7 +196,11 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
             type="submit"
             disabled={isLoading}
             className={`w-full py-2 px-4 rounded-md transition-colors
-                        ${isLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white
+                        ${
+                          isLoading
+                            ? "bg-blue-400 cursor-not-allowed"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        } text-white
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
           >
             {isLoading ? "Creating..." : "Add Content"}
