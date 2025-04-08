@@ -84,7 +84,7 @@ export function Card({
     switch (type) {
       case "youtube":
         return (
-          <div className="relative aspect-video bg-gray-100 rounded-lg overflow-hidden">
+          <div className="relative aspect-video bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden">
             <iframe
               className="absolute inset-0 w-full h-full"
               src={getYouTubeEmbedUrl(link)}
@@ -97,7 +97,7 @@ export function Card({
         );
       case "twitter":
         return (
-          <div className="bg-gray-100 rounded-lg overflow-hidden h-48 flex items-center justify-center">
+          <div className="bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden h-48 flex items-center justify-center">
             <blockquote className="twitter-tweet p-2" data-conversation="none">
               <a href={link.replace("x.com", "twitter.com")} />
             </blockquote>
@@ -105,12 +105,12 @@ export function Card({
         );
       case "article":
         return (
-          <div className="bg-gray-100 rounded-lg h-48 flex items-center justify-center">
+          <div className="bg-gray-100 dark:bg-gray-900 rounded-lg h-48 flex items-center justify-center">
             <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline dark:text-blue-500"
             >
               Read Article
             </a>
@@ -122,29 +122,29 @@ export function Card({
   };
 
   return (
-    <div className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow w-full max-w-xs">
+    <div className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow w-full max-w-xs">
       <div className="p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 min-w-0">
             {renderIcon()}
-            <h3 className="text-sm font-medium text-gray-900 truncate">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
               {title}
             </h3>
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button
-              className="p-1.5 hover:bg-gray-50 rounded-lg"
+              className="p-1.5 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg"
               aria-label="Share"
             >
-              <ShareIcon className="w-4 h-4 text-gray-600" />
+              <ShareIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
             <button
               onClick={() => deleteContent(id)}
-              className="p-1.5 hover:bg-gray-50 rounded-lg"
+              className="p-1.5 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg"
               aria-label="Delete"
             >
-              <TrashIcon className="w-4 h-4 text-gray-600" />
+              <TrashIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
           </div>
         </div>
@@ -158,7 +158,7 @@ export function Card({
             {tags.map((tag) => (
               <span
                 key={tag._id}
-                className="px-2 py-0.5 text-xs text-indigo-600 bg-indigo-50 rounded-full"
+                className="px-2 py-0.5 text-xs text-indigo-600 bg-indigo-50 dark:text-indigo-400 dark:bg-indigo-800 rounded-full"
               >
                 #{tag.title}
               </span>
@@ -167,7 +167,7 @@ export function Card({
         )}
 
         {/* Date */}
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           Added on {new Date(createdAt).toLocaleDateString()}
         </p>
       </div>

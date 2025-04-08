@@ -77,7 +77,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg p-6 w-full max-w-md relative"
+        className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md relative"
       >
         <button
           onClick={onClose}
@@ -99,7 +99,9 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           </svg>
         </button>
 
-        <h2 className="text-xl font-semibold mb-4">Add New Content</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200">
+          Add New Content
+        </h2>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
@@ -111,7 +113,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <label
               htmlFor="link"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1"
             >
               Link
             </label>
@@ -131,7 +133,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1"
             >
               Title
             </label>
@@ -151,7 +153,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <label
               htmlFor="type"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1"
             >
               Type
             </label>
@@ -174,7 +176,7 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <label
               htmlFor="tags"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-gray-900 dark:text-gray-200 mb-1"
             >
               Tags
             </label>

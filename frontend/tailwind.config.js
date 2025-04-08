@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -15,9 +13,13 @@ export default {
         indigo: {
           100: "#e0e6fe",
           600: "#5047e5",
-        }
-      }
+        },
+        dark: {
+          800: "#1f2937",
+          700: "#374151",
+        },
+      },
     },
   },
   plugins: [],
-}
+};

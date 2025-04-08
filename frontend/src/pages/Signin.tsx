@@ -33,7 +33,7 @@ export const Signin = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-96 p-6 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold text-center">Sign in</h2>
         <form onSubmit={handleSignin} className="mt-4">

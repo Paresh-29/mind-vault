@@ -7,10 +7,21 @@ import {
 import Dashboard from "./pages/Dashboard";
 import { Signin } from "./pages/Signin";
 import { Signup } from "./pages/Signup";
-import { useRecoilValue } from "recoil";
+import { RecoilRoot, useRecoilValue } from "recoil";
 import { authState } from "./state/atom";
 import { SharedBrainView } from "./components/SharedBrainView";
 import "./index.css";
+import { ThemeProvider } from "./providers/ThemeProvider";
+
+function AppWrapper() {
+  return (
+    <RecoilRoot>
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
+    </RecoilRoot>
+  );
+}
 
 function App() {
   const auth = useRecoilValue(authState);
@@ -34,4 +45,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppWrapper;

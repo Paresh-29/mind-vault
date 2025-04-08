@@ -12,6 +12,7 @@ import useLogout from "../hooks/useLogout";
 import { useRecoilValue } from "recoil";
 import { authState } from "../state/atom";
 import LogoutIcon from "../icons/LogoutIcon";
+import { ThemeToggle } from "../components/ThemeTogggle";
 
 const Navbar = ({
   activeFilter,
@@ -25,29 +26,30 @@ const Navbar = ({
     "Navbar rendering with activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed
+    isSidebarCollapsed,
   );
   return (
-    <header className="bg-white border-b border-gray-100 p-4 fixed top-0 left-0 right-0 z-20">
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-4 fixed top-0 left-0 right-0 z-20 h-18 shadow-md">
       <div
         className={`max-w-[1920px] mx-auto flex items-center gap-4 ${
           isSidebarCollapsed ? "pl-16" : "pl-48"
         } transition-all duration-300`}
       >
-        <h1 className="text-2xl font-semibold text-gray-900 min-w-0 truncate">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-200 min-w-0 truncate">
           {activeFilter === "all"
             ? "All Notes"
             : activeFilter === "twitter"
-            ? "Tweets"
-            : activeFilter === "youtube"
-            ? "Videos"
-            : activeFilter === "article"
-            ? "Articles"
-            : activeFilter === "link"
-            ? "Links"
-            : "Unknown"}
+              ? "Tweets"
+              : activeFilter === "youtube"
+                ? "Videos"
+                : activeFilter === "article"
+                  ? "Articles"
+                  : activeFilter === "link"
+                    ? "Links"
+                    : "Unknown"}
         </h1>
         <div className="ml-auto flex items-center gap-3">
+          <ThemeToggle />
           <Button
             variant="secondary"
             className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg"
@@ -65,11 +67,11 @@ const Navbar = ({
           </Button>
           {isAuthenticated && (
             <button
-              className="p-2 text-gray-900 hover:text-red-600 transition-colors"
+              className="p-2 text-gray-900 dark:text-gray-200 hover:dark:text-red-600 transition-colors"
               onClick={onLogout}
               aria-label="Logout"
             >
-              <LogoutIcon className="w-6 h-6" />
+              <LogoutIcon className="w-6 h-6  dark:text-gray-200 text-gray-900" />
             </button>
           )}
         </div>
@@ -80,11 +82,12 @@ const Navbar = ({
 
 const Dashboard = () => {
   const { isAuthenticated } = useRecoilValue(authState);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
-    () => window.matchMedia("(max-width: 768px)").matches
+    () => window.matchMedia("(max-width: 768px)").matches,
   );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
@@ -94,7 +97,7 @@ const Dashboard = () => {
     "Dashboard activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed
+    isSidebarCollapsed,
   );
 
   const filteredContent = useMemo(() => {
@@ -125,7 +128,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
       <Navbar
         activeFilter={activeFilter}
         onAddContent={() => setIsModalOpen(true)}
@@ -142,7 +145,7 @@ const Dashboard = () => {
           setIsCollapsed={setIsSidebarCollapsed}
         />
         <main
-          className={`flex-1 overflow-y-auto p-6 ${
+          className={`flex-1 overflow-y-auto p-6 pb-6 ${
             isSidebarCollapsed ? "ml-16" : "ml-48"
           } transition-all duration-300`}
         >
@@ -156,7 +159,10 @@ const Dashboard = () => {
           )}
           {!loading && !error && filteredContent.length === 0 && <EmptyState />}
           {!loading && !error && filteredContent.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 justify-items-center">
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 justify-items-center
+                            text-center text-gray-900 dark:text-gray-200 font-medium mb-2"
+            >
               {filteredContent.map((item) => (
                 <Card
                   key={item._id}
