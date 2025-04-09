@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -13,9 +14,15 @@ export const authState = atom<AuthState>({
   },
 });
 
+const { persistAtom } = recoilPersist({
+  key: "theme-preference",
+  storage: localStorage,
+});
+
 export type ThemeMode = "light" | "dark";
 
 export const themeState = atom<ThemeMode>({
   key: "themeState",
   default: "light",
+  effects_UNSTABLE: [persistAtom],
 });

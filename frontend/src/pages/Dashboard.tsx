@@ -27,7 +27,7 @@ const Navbar = ({
     "Navbar rendering with activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed
+    isSidebarCollapsed,
   );
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-4 fixed top-0 left-0 right-0 z-20 h-18 shadow-md">
@@ -40,14 +40,14 @@ const Navbar = ({
           {activeFilter === "all"
             ? "All Notes"
             : activeFilter === "twitter"
-            ? "Tweets"
-            : activeFilter === "youtube"
-            ? "Videos"
-            : activeFilter === "article"
-            ? "Articles"
-            : activeFilter === "link"
-            ? "Links"
-            : "Unknown"}
+              ? "Tweets"
+              : activeFilter === "youtube"
+                ? "Videos"
+                : activeFilter === "article"
+                  ? "Articles"
+                  : activeFilter === "link"
+                    ? "Links"
+                    : "Unknown"}
         </h1>
         <div className="ml-auto flex items-center gap-3">
           <ThemeToggle />
@@ -88,7 +88,7 @@ const Dashboard = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("all");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
-    () => window.matchMedia("(max-width: 768px)").matches
+    () => window.matchMedia("(max-width: 768px)").matches,
   );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
@@ -98,7 +98,7 @@ const Dashboard = () => {
     "Dashboard activeFilter:",
     activeFilter,
     "isSidebarCollapsed:",
-    isSidebarCollapsed
+    isSidebarCollapsed,
   );
 
   const filteredContent = useMemo(() => {
@@ -168,7 +168,7 @@ const Dashboard = () => {
             )}
             {!loading && !error && filteredContent.length > 0 && (
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 justify-items-center
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center
                             text-center text-gray-900 dark:text-gray-200"
               >
                 {filteredContent.map((item) => (
