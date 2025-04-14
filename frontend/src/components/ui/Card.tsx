@@ -1,5 +1,15 @@
-import { useEffect } from "react";
-import { TrashIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { useEffect } from 'react';
+import { TrashIcon, ShareIcon } from '@heroicons/react/24/outline';
+
+declare global {
+  interface Window {
+    twttr?: {
+      widgets: {
+        load: () => void;
+      };
+    };
+  }
+}
 
 interface Tag {
   _id: string;
@@ -10,15 +20,26 @@ interface CardProps {
   id: string;
   title: string;
   link: string;
-  type: "twitter" | "youtube" | "article";
+  type: 'twitter' | 'youtube' | 'article';
   tags?: Tag[];
   createdAt: string;
   deleteContent: (id: string) => void;
 }
 
-const getYouTubeEmbedUrl = (url: string) => {
-  const videoIdMatch = url.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
-  return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : "";
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) return null;
+
+  // Handle youtu.be links
+  const shortUrlMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (shortUrlMatch) return `https://www.youtube.com/embed/${shortUrlMatch[1]}`;
+
+  // Handle regular YouTube URLs
+  const standardMatch = url.match(
+    /(?:v=|\/v\/|embed\/|watch\?v=|\&v=)([a-zA-Z0-9_-]{11})/,
+  );
+  return standardMatch
+    ? `https://www.youtube.com/embed/${standardMatch[1]}`
+    : null;
 };
 
 export function Card({
@@ -31,21 +52,33 @@ export function Card({
   deleteContent,
 }: CardProps) {
   useEffect(() => {
-    if (type === "twitter" && window.twttr) {
-      window.twttr.widgets.load();
-    } else if (type === "twitter") {
-      const script = document.createElement("script");
-      script.src = "https://platform.twitter.com/widgets.js";
-      script.async = true;
-      script.onload = () => window.twttr?.widgets?.load();
-      document.body.appendChild(script);
-      return () => document.body.removeChild(script); // Cleanup
-    }
+    if (type !== 'twitter') return;
+
+    const initTwitterWidget = () => {
+      if (window.twttr?.widgets) {
+        window.twttr.widgets.load();
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.async = true;
+        script.onload = () => {
+          if (window.twttr?.widgets) {
+            window.twttr.widgets.load();
+          }
+        };
+        document.body.appendChild(script);
+        return () => {
+          document.body.removeChild(script);
+        };
+      }
+    };
+
+    initTwitterWidget();
   }, [type, link]);
 
   const renderIcon = () => {
     switch (type) {
-      case "twitter":
+      case 'twitter':
         return (
           <svg
             className="w-4 h-4 text-gray-600 flex-shrink-0"
@@ -55,7 +88,7 @@ export function Card({
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
         );
-      case "youtube":
+      case 'youtube':
         return (
           <svg
             className="w-4 h-4 text-gray-600 flex-shrink-0"
@@ -65,7 +98,7 @@ export function Card({
             <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
           </svg>
         );
-      case "article":
+      case 'article':
         return (
           <svg
             className="w-4 h-4 text-gray-600 flex-shrink-0"
@@ -82,7 +115,7 @@ export function Card({
 
   const renderContent = () => {
     switch (type) {
-      case "youtube":
+      case 'youtube':
         return (
           <div className="relative aspect-video bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden">
             <iframe
@@ -95,15 +128,15 @@ export function Card({
             />
           </div>
         );
-      case "twitter":
+      case 'twitter':
         return (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden h-48 flex items-center justify-center">
             <blockquote className="twitter-tweet p-2" data-conversation="none">
-              <a href={link.replace("x.com", "twitter.com")} />
+              <a href={link.replace('x.com', 'twitter.com')} />
             </blockquote>
           </div>
         );
-      case "article":
+      case 'article':
         return (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg h-48 flex items-center justify-center">
             <a
@@ -153,7 +186,7 @@ export function Card({
         <div className="mb-3">{renderContent()}</div>
 
         {/* Tags */}
-        {tags?.length > 0 && (
+        {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
             {tags.map((tag) => (
               <span

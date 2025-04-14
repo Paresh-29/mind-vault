@@ -20,7 +20,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    /* Add these 3 lines to fix your specific errors */
+    "types": ["vite/client"],
+    "strictNullChecks": true,
+    "noImplicitAny": false
   },
   "include": ["src"]
 }

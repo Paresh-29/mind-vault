@@ -1,29 +1,42 @@
-import React, { useEffect, useRef, useState } from "react";
-import { apiWithAuth } from "../utils/axios";
+import { useEffect, useRef, useState } from 'react';
+import { apiWithAuth } from '../utils/axios';
 
-const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
+interface CreateModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+const CreateModalContent = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}: CreateModalProps) => {
   const [formData, setFormData] = useState({
-    link: "",
-    title: "",
-    type: "",
-    tags: "",
+    link: '',
+    title: '',
+    type: '',
+    tags: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const modalRef = useRef();
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -43,31 +56,31 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
     setError(null);
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       await apiWithAuth.post(
-        "/content",
+        '/content',
         {
           ...formData,
           tags: formData.tags
-            ? formData.tags.split(",").map((tag) => tag.trim())
+            ? formData.tags.split(',').map((tag) => tag.trim())
             : [], // Ensuring tags are an array
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       setFormData({
-        link: "",
-        title: "",
-        type: "",
-        tags: "",
+        link: '',
+        title: '',
+        type: '',
+        tags: '',
       });
       onSuccess();
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to create content");
+      setError(error.response?.data?.message || 'Failed to create content');
     } finally {
       setIsLoading(false);
     }
@@ -198,12 +211,12 @@ const CreateModalContent = ({ isOpen, onClose, onSuccess }) => {
             className={`w-full py-2 px-4 rounded-md transition-colors
                         ${
                           isLoading
-                            ? "bg-blue-400 cursor-not-allowed"
-                            : "bg-blue-500 hover:bg-blue-600"
+                            ? 'bg-blue-400 cursor-not-allowed'
+                            : 'bg-blue-500 hover:bg-blue-600'
                         } text-white
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2`}
           >
-            {isLoading ? "Creating..." : "Add Content"}
+            {isLoading ? 'Creating...' : 'Add Content'}
           </button>
         </form>
       </div>
