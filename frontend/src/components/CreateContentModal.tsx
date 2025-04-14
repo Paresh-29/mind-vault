@@ -19,7 +19,7 @@ const CreateModalContent = ({
     tags: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -37,11 +37,13 @@ const CreateModalContent = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -50,7 +52,7 @@ const CreateModalContent = ({
     setError(null);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
@@ -63,7 +65,7 @@ const CreateModalContent = ({
           ...formData,
           tags: formData.tags
             ? formData.tags.split(',').map((tag) => tag.trim())
-            : [], // Ensuring tags are an array
+            : [],
         },
         {
           headers: {
@@ -79,7 +81,7 @@ const CreateModalContent = ({
         tags: '',
       });
       onSuccess();
-    } catch (error) {
+    } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to create content');
     } finally {
       setIsLoading(false);

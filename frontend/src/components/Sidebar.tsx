@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import { SidebarItems } from "./SidebarItems";
-import { Logo } from "./ui/Logo";
-import { TwitterIcon } from "./ui/Twitter";
-import { YoutubeIcon } from "./ui/Youtube";
+import { useEffect } from 'react';
+import { SidebarItems } from './SidebarItems';
+import { Logo } from './ui/Logo';
+import { TwitterIcon } from './ui/Twitter';
+import { YoutubeIcon } from './ui/Youtube';
 import {
   FileText,
   Hash,
@@ -10,13 +10,21 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-} from "lucide-react";
+} from 'lucide-react';
+
+type FilterType = 'all' | 'twitter' | 'youtube' | 'article';
 
 interface SidebarProps {
-  activeFilter: string;
-  onFilterChange: (filter: string) => void;
+  activeFilter: FilterType;
+  onFilterChange: (filter: FilterType) => void;
   isCollapsed: boolean;
-  setIsCollapsed: (value: boolean) => void;
+  setIsCollapsed: (collapsed: boolean) => void;
+}
+
+interface NavigationItem {
+  id: FilterType | 'link';
+  text: string;
+  icon: React.ReactNode;
 }
 
 export const Sidebar = ({
@@ -26,40 +34,52 @@ export const Sidebar = ({
   setIsCollapsed,
 }: SidebarProps) => {
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
     const handleMediaChange = () => setIsCollapsed(mediaQuery.matches);
-    mediaQuery.addEventListener("change", handleMediaChange);
-    return () => mediaQuery.removeEventListener("change", handleMediaChange);
+    mediaQuery.addEventListener('change', handleMediaChange);
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
   }, [setIsCollapsed]);
 
-  const navigationItems = [
-    { id: "all", text: "All Content", icon: <Hash className="w-5 h-5" /> },
+  const navigationItems: NavigationItem[] = [
+    { id: 'all', text: 'All Content', icon: <Hash className="w-5 h-5" /> },
     {
-      id: "twitter",
-      text: "Tweets",
+      id: 'twitter',
+      text: 'Tweets',
       icon: <TwitterIcon className="w-5 h-5 text-blue-400" />,
     },
     {
-      id: "youtube",
-      text: "Videos",
+      id: 'youtube',
+      text: 'Videos',
       icon: <YoutubeIcon className="w-5 h-5 text-red-500" />,
     },
     {
-      id: "article",
-      text: "Articles",
+      id: 'article',
+      text: 'Articles',
       icon: <FileText className="w-5 h-5 text-emerald-400" />,
     },
     {
-      id: "link",
-      text: "Links",
+      id: 'link',
+      text: 'Links',
       icon: <LinkIcon className="w-5 h-5 text-purple-400" />,
     },
   ];
 
+  const handleItemClick = (id: string) => {
+    if (
+      id === 'all' ||
+      id === 'twitter' ||
+      id === 'youtube' ||
+      id === 'article'
+    ) {
+      onFilterChange(id);
+    }
+    // Handle 'link' case if needed
+  };
+
   return (
     <aside
       className={`fixed left-0 top-14 h-[calc(100vh-3.5rem)] bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700 transition-all duration-300 z-10 shadow-md ${
-        isCollapsed ? "w-16" : "w-52"
+        isCollapsed ? 'w-16' : 'w-52'
       }`}
     >
       <div className="flex h-full flex-col p-4">
@@ -72,9 +92,8 @@ export const Sidebar = ({
               <Logo className="w-7 h-7 flex-shrink-0 text-white" />
             </div>
             {!isCollapsed && (
-              <span className="text-xl font-bold text-gray-900 dark:text-gray-50 truncate flex items-center gap-1 ">
+              <span className="text-xl font-bold text-gray-900 dark:text-gray-50 truncate flex items-center gap-1">
                 Second Brain
-                {/* <Sparkles className="w-4 h-4 text-amber-400" /> */}
               </span>
             )}
           </button>
@@ -82,7 +101,7 @@ export const Sidebar = ({
 
         <nav className="mt-6 flex-1 space-y-2">
           <div className="pl-2 pb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-            {!isCollapsed && "Navigation"}
+            {!isCollapsed && 'Navigation'}
           </div>
           {navigationItems.map((item) => (
             <SidebarItems
@@ -91,7 +110,7 @@ export const Sidebar = ({
               icon={item.icon}
               collapsed={isCollapsed}
               isActive={activeFilter === item.id}
-              onClick={() => onFilterChange(item.id)}
+              onClick={() => handleItemClick(item.id)}
             />
           ))}
         </nav>
@@ -102,7 +121,7 @@ export const Sidebar = ({
             text-white rounded-full p-2 shadow-lg
             hover:shadow-indigo-500/20 hover:scale-105
             transition-all duration-300 ${
-              isCollapsed ? "w-10 h-10" : "w-12 h-12"
+              isCollapsed ? 'w-10 h-10' : 'w-12 h-12'
             }`}
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
@@ -111,7 +130,6 @@ export const Sidebar = ({
           ) : (
             <div className="flex items-center">
               <ChevronLeft className="w-5 h-5 text-white" />
-              {/* <span className="ml-1 text-sm font-medium">Collapse</span> */}
             </div>
           )}
         </button>

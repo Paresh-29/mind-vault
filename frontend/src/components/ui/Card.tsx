@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { TrashIcon, ShareIcon } from '@heroicons/react/24/outline';
+import { Tag } from '../../types/content';
 
 declare global {
   interface Window {
@@ -9,11 +10,6 @@ declare global {
       };
     };
   }
-}
-
-interface Tag {
-  _id: string;
-  title: string;
 }
 
 interface CardProps {
@@ -120,7 +116,7 @@ export function Card({
           <div className="relative aspect-video bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden">
             <iframe
               className="absolute inset-0 w-full h-full"
-              src={getYouTubeEmbedUrl(link)}
+              src={getYouTubeEmbedUrl(link) || ''}
               title={title}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
