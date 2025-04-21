@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ['https://mind-vault-virid.vercel.app', 'http://localhost:5173'],
+    origin: ['https://mind-vault-beta.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Authorization', 'Content-Type'],
     credentials: true,
