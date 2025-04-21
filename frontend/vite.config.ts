@@ -8,9 +8,7 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
-      input: {
-        main: './src/main.tsx', 
-      },
+      input: './index.html',
     },
   },
   resolve: {
