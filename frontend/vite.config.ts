@@ -5,9 +5,10 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    sourcemap: true, // optional, helps with debugging production builds
+    sourcemap: true,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
   },
+  base: '/',
 });
