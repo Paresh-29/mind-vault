@@ -1,9 +1,8 @@
-
-interface TwitterProps {
+interface TwitterIconProps {
     className?: string;
 }
 
-export function TwitterIcon({ className = "" }: TwitterProps) {
+export function TwitterIcon({ className = "" }: TwitterIconProps) {
     return (
         <svg stroke="currentColor" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" viewBox="0 0 50 50"
             className="text-gray-300">

@@ -23,5 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+# Compiled JavaScript files
+*.js
+*.jsx
+!src/**/*.jsx  # Keep JSX files in src directory
+
 .env
 dist/

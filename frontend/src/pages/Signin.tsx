@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { authState } from "../state/atom";
 import { apiWithoutAuth } from "../utils/axios";
 
 export const Signin = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const setAuth = useSetRecoilState(authState);
 
-  const handleSignin = async (e: React.FormEvent) => {
+  const handleSignin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TrashIcon, ShareIcon } from '@heroicons/react/24/outline';
 import { Tag } from '../../types/content';
 
@@ -47,12 +47,16 @@ export function Card({
   createdAt,
   deleteContent,
 }: CardProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isTwitterLoaded, setIsTwitterLoaded] = useState(false);
+
   useEffect(() => {
     if (type !== 'twitter') return;
 
     const initTwitterWidget = () => {
       if (window.twttr?.widgets) {
         window.twttr.widgets.load();
+        setIsTwitterLoaded(true);
       } else {
         const script = document.createElement('script');
         script.src = 'https://platform.twitter.com/widgets.js';
@@ -60,6 +64,7 @@ export function Card({
         script.onload = () => {
           if (window.twttr?.widgets) {
             window.twttr.widgets.load();
+            setIsTwitterLoaded(true);
           }
         };
         document.body.appendChild(script);
@@ -121,15 +126,25 @@ export function Card({
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              onLoad={() => setIsLoading(false)}
             />
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+                <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin" />
+              </div>
+            )}
           </div>
         );
       case 'twitter':
         return (
           <div className="bg-gray-100 dark:bg-gray-900 rounded-lg overflow-hidden h-48 flex items-center justify-center">
-            <blockquote className="twitter-tweet p-2" data-conversation="none">
-              <a href={link.replace('x.com', 'twitter.com')} />
-            </blockquote>
+            {!isTwitterLoaded ? (
+              <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin" />
+            ) : (
+              <blockquote className="twitter-tweet p-2" data-conversation="none">
+                <a href={link.replace('x.com', 'twitter.com')} />
+              </blockquote>
+            )}
           </div>
         );
       case 'article':
@@ -148,6 +163,15 @@ export function Card({
       default:
         return null;
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   };
 
   return (
@@ -197,7 +221,7 @@ export function Card({
 
         {/* Date */}
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Added on {new Date(createdAt).toLocaleDateString()}
+          Added on {formatDate(createdAt)}
         </p>
       </div>
     </div>

@@ -5,7 +5,7 @@ interface Content {
     _id: string;
     title: string;
     link: string;
-    type: "twitter" | "youtube";
+    type: "twitter" | "youtube" | "article";
     tags?: string[];
 }
 
@@ -17,14 +17,22 @@ export function useContent() {
     // Fetch content
     const fetchContent = async () => {
         try {
+            setLoading(true);
+            setError(null);
+            
             const token = localStorage.getItem("token");
+            if (!token) {
+                setError("No authentication token found");
+                return;
+            }
+
             const response = await apiWithAuth.get("/content", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setContent(response.data.contents || []);
-            setError(null);
         } catch (err: any) {
             setError(err.response?.data?.message || "Failed to fetch content");
+            setContent([]);
         } finally {
             setLoading(false);
         }
@@ -44,7 +52,6 @@ export function useContent() {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("Delete Response:", res.data);
             if (res.status === 200) {
                 setContent((prev) => prev.filter((item) => item._id !== contentId));
             }

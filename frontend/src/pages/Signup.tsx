@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiWithoutAuth } from "../utils/axios";
 
 export const Signup = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e: React.FormEvent) => {
+  const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccess("");
