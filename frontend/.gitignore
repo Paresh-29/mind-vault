@@ -1,32 +1,26 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Build output
+dist/
+dist-ssr/
+build/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Don't ignore real source files by accident
+!src/**/*.ts
+!src/**/*.tsx
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Compiled JavaScript files
+# Optional: ignore compiled JS if you're using `tsc` outside of build
 *.js
 *.jsx
-!src/**/*.jsx  # Keep JSX files in src directory
 
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Environment
 .env
-dist/
+
+# Editor stuff
+.vscode/*
+.idea/
+.DS_Store
