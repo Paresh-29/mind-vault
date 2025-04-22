@@ -11,6 +11,9 @@ import { useRecoilValue } from "recoil";
 import { authState } from "../state/atom";
 import { Navbar } from "../components/Navbar";
 import { GridSkeleton } from "../components/ui/Skeleton";
+import SkeletonNavbar from "../components/ui/SkeletonNavbar";
+import SkeletonSidebar from "../components/ui/SkeletonSidebar";
+
 interface ContentItem {
   _id: string;
   type: "twitter" | "youtube" | "article";
@@ -63,29 +66,36 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-full bg-gray-200 dark:bg-gray-800">
-      <Navbar
-        activeFilter={activeFilter}
-        onAddContent={() => setIsModalOpen(true)}
-        onShare={() => setIsShareModalOpen(true)}
-        onLogout={logout}
-        isAuthenticated={isAuthenticated}
-        isSidebarCollapsed={isSidebarCollapsed}
-      />
-      <div className="flex flex-1 overflow-hidden pt-[4.5rem]">
-        <Sidebar
+      {loading ? (
+        <SkeletonNavbar />
+      ) : (
+        <Navbar
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={setIsSidebarCollapsed}
+          onAddContent={() => setIsModalOpen(true)}
+          onShare={() => setIsShareModalOpen(true)}
+          onLogout={logout}
+          isAuthenticated={isAuthenticated}
+          isSidebarCollapsed={isSidebarCollapsed}
         />
+      )}
+      <div className="flex flex-1 overflow-hidden pt-[4.5rem]">
+        {loading ? (
+          <SkeletonSidebar />
+        ) : (
+          <Sidebar
+            activeFilter={activeFilter}
+            onFilterChange={setActiveFilter}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
+        )}
         <main
-          className={`flex-1 overflow-y-auto p-6 pb-6 ${
-            isSidebarCollapsed ? "ml-16" : "ml-48"
-          } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
+          className={`flex-1 overflow-y-auto p-6 pb-6 ${isSidebarCollapsed ? "ml-16" : "ml-48"
+            } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
         >
           <div className="min-h-[calc(100vh-4.5rem)] p-6">
             {loading ? (
-              <GridSkeleton count={10} />
+              <GridSkeleton count={filteredContent.length || 10} />
             ) : error ? (
               <div className="bg-red-50 text-red-600 p-4 rounded-lg">
                 {error}
