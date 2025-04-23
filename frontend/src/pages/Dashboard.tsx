@@ -35,6 +35,7 @@ const Dashboard = () => {
   );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
+  console.log("content", content);
   const logout = useLogout();
 
   const filteredContent = useMemo(() => {
@@ -63,6 +64,15 @@ const Dashboard = () => {
       </Button>
     </div>
   );
+
+  const getSkeleton = () => {
+    const width = window.innerWidth;
+    if (width >= 1536) return 25;
+    if (width >= 1280) return 20;
+    if (width >= 1024) return 15;
+    if (width >= 640) return 10;
+    return 5;
+  };
 
   return (
     <div className="flex flex-col h-full bg-gray-200 dark:bg-gray-800">
@@ -94,8 +104,8 @@ const Dashboard = () => {
             } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
         >
           <div className="min-h-[calc(100vh-4.5rem)] p-6">
-            {loading ? (
-              <GridSkeleton count={filteredContent.length || 10} />
+            {loading && content.length === 0 ? (
+              <GridSkeleton count={getSkeleton()} />
             ) : error ? (
               <div className="bg-red-50 text-red-600 p-4 rounded-lg">
                 {error}
