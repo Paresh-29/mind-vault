@@ -1,37 +1,36 @@
 import { useMemo, useState } from "react";
-import { Button } from "../components/ui/Button";
-import PlusIcon from "../icons/Plusicon";
 import CreateModalContent from "../components/CreateContentModal";
 import useContent from "../hooks/useContent";
 import { Sidebar } from "../components/Sidebar";
 import { Card } from "../components/ui/Card";
 import { ShareBrainModal } from "../components/ShareBrianModal";
 import useLogout from "../hooks/useLogout";
-import { useRecoilValue } from "recoil";
-import { authState } from "../state/atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { authState, modalState } from "../state/atom";
 import { Navbar } from "../components/Navbar";
 import { GridSkeleton } from "../components/ui/Skeleton";
 import SkeletonNavbar from "../components/ui/SkeletonNavbar";
 import SkeletonSidebar from "../components/ui/SkeletonSidebar";
+import EmptyState from "../components/ui/EmptyState";
+import { Content } from "@/types/content";
 
-interface ContentItem {
-  _id: string;
-  type: "twitter" | "youtube" | "article";
-  title: string;
-  link: string;
-  tags?: { _id: string; title: string }[];
-  createdAt: string;
-}
+// interface ContentItem {
+//   _id: string;
+//   type: "twitter" | "youtube" | "article";
+//   title: string;
+//   link: string;
+//   tags?: { _id: string; title: string }[];
+//   createdAt: string;
+// }
 
 const Dashboard = () => {
   const { isAuthenticated } = useRecoilValue(authState);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [modal, setModal] = useRecoilState(modalState);
   const [activeFilter, setActiveFilter] = useState<
     "all" | "twitter" | "youtube" | "article"
   >("all");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
-    () => window.matchMedia("(max-width: 768px)").matches,
+    () => window.matchMedia("(max-width: 768px)").matches
   );
   const { content, loading, error, refreshContent, deleteContent } =
     useContent();
@@ -44,26 +43,9 @@ const Dashboard = () => {
   }, [content, activeFilter]);
 
   const handleContentAdded = () => {
-    setIsModalOpen(false);
+    setModal((prev) => ({ ...prev, isModalOpen: false }));
     refreshContent();
   };
-
-  const EmptyState = () => (
-    <div className="mt-32 text-center">
-      <p className="text-lg text-gray-500">
-        {activeFilter === "all"
-          ? "No notes yet. Start by adding some content!"
-          : `No ${activeFilter} content found. Try adding some!`}
-      </p>
-      <Button
-        className="mt-4"
-        icon={<PlusIcon />}
-        onClick={() => setIsModalOpen(true)}
-      >
-        Add Content
-      </Button>
-    </div>
-  );
 
   const getSkeleton = () => {
     const width = window.innerWidth;
@@ -81,8 +63,18 @@ const Dashboard = () => {
       ) : (
         <Navbar
           activeFilter={activeFilter}
-          onAddContent={() => setIsModalOpen(true)}
-          onShare={() => setIsShareModalOpen(true)}
+          onAddContent={() =>
+            setModal((prev) => ({
+              ...prev,
+              isModalOpen: true,
+            }))
+          }
+          onShare={() =>
+            setModal((prev) => ({
+              ...prev,
+              isShareModalOpen: true,
+            }))
+          }
           onLogout={logout}
           isAuthenticated={isAuthenticated}
           isSidebarCollapsed={isSidebarCollapsed}
@@ -100,8 +92,9 @@ const Dashboard = () => {
           />
         )}
         <main
-          className={`flex-1 overflow-y-auto p-6 pb-6 ${isSidebarCollapsed ? "ml-16" : "ml-48"
-            } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
+          className={`flex-1 overflow-y-auto p-6 pb-6 ${
+            isSidebarCollapsed ? "ml-16" : "ml-48"
+          } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
         >
           <div className="min-h-[calc(100vh-4.5rem)] p-6">
             {loading && content.length === 0 ? (
@@ -112,11 +105,19 @@ const Dashboard = () => {
               </div>
             ) : filteredContent.length === 0 ? (
               <div className="flex items-center justify-center">
-                <EmptyState />
+                <EmptyState
+                  activeFilter={activeFilter}
+                  onAddContent={() =>
+                    setModal((prev) => ({
+                      ...prev,
+                      isModalOpen: true,
+                    }))
+                  }
+                />
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center text-center text-gray-900 dark:text-gray-200">
-                {filteredContent.map((item: any) => {
+                {/* {filteredContent.map((item: Content) => {
                   const cardProps = {
                     id: item._id,
                     type: ["twitter", "youtube", "article"].includes(item.type)
@@ -138,20 +139,42 @@ const Dashboard = () => {
                       deleteContent={deleteContent}
                     />
                   );
-                })}
+                })} */}
+                {filteredContent.map((item: Content) => (
+                  <Card
+                    key={item._id}
+                    id={item._id}
+                    type={item.type}
+                    title={item.title}
+                    link={item.link}
+                    tags={item.tags}
+                    createdAt={item.createdAt}
+                    deleteContent={deleteContent}
+                  />
+                ))}
               </div>
             )}
           </div>
         </main>
       </div>
       <CreateModalContent
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={modal.isModalOpen}
+        onClose={() =>
+          setModal((prev) => ({
+            ...prev,
+            isModalOpen: false,
+          }))
+        }
         onSuccess={handleContentAdded}
       />
       <ShareBrainModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
+        isOpen={modal.isShareModalOpen}
+        onClose={() =>
+          setModal((prev) => ({
+            ...prev,
+            isShareModalOpen: false,
+          }))
+        }
         itemCount={filteredContent.length}
       />
     </div>

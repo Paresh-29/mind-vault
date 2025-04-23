@@ -26,3 +26,17 @@ export const themeState = atom<ThemeMode>({
   default: "light",
   effects_UNSTABLE: [persistAtom],
 });
+
+// modalState
+export interface ModalState {
+  isModalOpen: boolean;
+  isShareModalOpen: boolean;
+}
+
+export const modalState = atom<ModalState>({
+  key: "modalState",
+  default: {
+    isModalOpen: false,
+    isShareModalOpen: false,
+  },
+});

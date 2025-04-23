@@ -4,10 +4,10 @@ export interface Tag {
 }
 
 export interface Content {
-  id: string;
+  _id: string;
   title: string;
   link: string;
-  type: 'twitter' | 'youtube' | 'article';
+  type: "twitter" | "youtube" | "article";
   tags?: Tag[];
   createdAt: string;
 }
