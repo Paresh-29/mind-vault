@@ -18,6 +18,16 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isSharing, setIsSharing] = useState(false);
 
+  const FRONTEND_BASE_URL =
+    import.meta.env.VERCEL_URL || "http://localhost:5173";
+
+  const convertToFrontedLink = (backendLink: string) => {
+    return backendLink.replace(
+      "http://localhost:3000/api/v1/brain/",
+      `${FRONTEND_BASE_URL}/brain/`
+    );
+  };
+
   const handleShare = async () => {
     setIsLoading(true);
     setError(null);
@@ -31,9 +41,10 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
-      setShareUrl(response.data.link);
+      const frontendLink = convertToFrontedLink(response.data.link);
+      setShareUrl(frontendLink);
       setIsSharing(true);
     } catch (error: unknown) {
       const errorMessage =
@@ -64,21 +75,22 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       if (response.data.message === "Share link has been disabled.") {
         setShareUrl(null);
         setIsSharing(false);
       } else if (response.data.link) {
-        setShareUrl(response.data.link);
+        const frontendLink = convertToFrontedLink(response.data.link);
+        setShareUrl(frontendLink);
         setIsSharing(true);
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       setError(
-        errorMessage || `Failed to ${isSharing ? "disable" : "enable"} sharing`,
+        errorMessage || `Failed to ${isSharing ? "disable" : "enable"} sharing`
       );
     } finally {
       setIsLoading(false);
