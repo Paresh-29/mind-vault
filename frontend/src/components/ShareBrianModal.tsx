@@ -18,13 +18,20 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isSharing, setIsSharing] = useState(false);
 
-  const FRONTEND_BASE_URL =
-    import.meta.env.VERCEL_URL || "http://localhost:5173";
+  // const FRONTEND_BASE_URL =
+  //   import.meta.env.VERCEL_URL || "http://localhost:5173";
+  //
+  // const convertToFrontedLink = (backendLink: string) => {
+  //   return backendLink.replace(
+  //     "http://localhost:3000/api/v1/brain/",
+  //     `${FRONTEND_BASE_URL}/brain/`
+  //   );
+  // };
 
   const convertToFrontedLink = (backendLink: string) => {
     return backendLink.replace(
       "http://localhost:3000/api/v1/brain/",
-      `${FRONTEND_BASE_URL}/brain/`
+      "https://mind-vault-beta.vercel.app/brain/",
     );
   };
 
@@ -41,7 +48,7 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const frontendLink = convertToFrontedLink(response.data.link);
       setShareUrl(frontendLink);
@@ -75,7 +82,7 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (response.data.message === "Share link has been disabled.") {
@@ -90,7 +97,7 @@ export const ShareBrainModal: React.FC<ShareBrainModalProps> = ({
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       setError(
-        errorMessage || `Failed to ${isSharing ? "disable" : "enable"} sharing`
+        errorMessage || `Failed to ${isSharing ? "disable" : "enable"} sharing`,
       );
     } finally {
       setIsLoading(false);
