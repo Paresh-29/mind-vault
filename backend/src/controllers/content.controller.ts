@@ -5,7 +5,7 @@ import Tag from "../models/tag.model";
 
 export const createContent = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const result = contentSchema.safeParse(req.body);
 
@@ -25,10 +25,10 @@ export const createContent = async (
         const tag = await Tag.findOneAndUpdate(
           { title: tagTitle },
           { title: tagTitle },
-          { upsert: true, new: true },
+          { upsert: true, new: true }
         );
         return tag._id;
-      }),
+      })
     );
 
     const newContent = await Content.create({
@@ -55,7 +55,7 @@ export const createContent = async (
 
 export const getAllContent = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const contents = await Content.find({
@@ -77,7 +77,7 @@ export const getAllContent = async (
 
 export const deleteContent = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const { contentId } = req.params;
@@ -109,6 +109,49 @@ export const deleteContent = async (
     console.log(error);
     res.status(500).json({
       message: "failed to delete content",
+    });
+  }
+};
+
+export const searchContent = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { query } = req.query;
+
+  if (!query || typeof query !== "string") {
+    res.status(400).json({
+      message: "query parameter is required",
+    });
+    return;
+  }
+
+  try {
+    const contents = await Content.find({
+      userId: req.userId,
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { link: { $regex: query, $options: "i" } },
+        { type: { $regex: query, $options: "i" } },
+      ],
+    })
+      .populate("tags", "title")
+      .select("-__v");
+
+    if (contents.length === 0) {
+      res.status(404).json({
+        message: "no content found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      contents,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "failed to search content",
     });
   }
 };
