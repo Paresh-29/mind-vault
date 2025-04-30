@@ -44,6 +44,34 @@ export function useContent() {
     }
   };
 
+  // search content
+  const searchContent = async (query: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("You need to be logged in to search content");
+        return;
+      }
+      const response = await apiWithAuth.get(`/content/search?query=${query}`, {
+        headers: { Authorization: `Bearrer ${token}` },
+      });
+
+      setContent(response.data.contents || []);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        setError(error.response?.data?.message || "Failed to search content");
+      } else {
+        setError("An unknown error occurred");
+      }
+      setContent([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Delete content
   const deleteContent = async (contentId: string) => {
     if (!contentId) {
@@ -82,6 +110,7 @@ export function useContent() {
     loading,
     error,
     refreshContent: fetchContent,
+    searchContent,
     deleteContent,
   };
 }

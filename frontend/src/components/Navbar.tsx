@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import LogoutIcon from '../icons/LogoutIcon';
-import PlusIcon from '../icons/Plusicon';
-import Shareicon from '../icons/Shareicon';
-import { ThemeToggle } from './ThemeToggle';
-import { Button } from './ui/Button';
-import { BiMenu, BiX } from 'react-icons/bi';
+import { useEffect, useState } from "react";
+import LogoutIcon from "../icons/LogoutIcon";
+import PlusIcon from "../icons/Plusicon";
+import Shareicon from "../icons/Shareicon";
+import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "./ui/Button";
+import { BiMenu, BiX } from "react-icons/bi";
+import SearchBar from "./SearchBar";
 
 interface NavbarProps {
   activeFilter: string;
@@ -13,6 +14,7 @@ interface NavbarProps {
   onLogout: () => void;
   isAuthenticated: boolean;
   isSidebarCollapsed: boolean;
+  onSearch?: (query: string) => void;
 }
 
 export const Navbar = ({
@@ -22,6 +24,7 @@ export const Navbar = ({
   onLogout,
   isAuthenticated,
   isSidebarCollapsed,
+  onSearch,
 }: NavbarProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -41,33 +44,39 @@ export const Navbar = ({
       lastScrollY = currentScrollY;
     };
 
-    window.addEventListener('scroll', controlNavbar);
+    window.addEventListener("scroll", controlNavbar);
 
-    return () => window.removeEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener("scroll", controlNavbar);
   }, []);
 
   return (
     <header
-      className={`bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-4 fixed top-0 left-0 right-0 z-20 h-18 shadow-md transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
+      className={`bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 p-4 fixed top-0 left-0 right-0 z-20 h-18 shadow-md transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
     >
-      <div
-        className={`max-w-[1920px] mx-auto flex items-center gap-4 ${
-          isSidebarCollapsed ? 'pl-16' : 'pl-48'
-        } transition-all duration-300`}
-      >
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-200 min-w-0 truncate">
-          {activeFilter === 'all'
-            ? 'All Notes'
-            : activeFilter === 'twitter'
-              ? 'Tweets'
-              : activeFilter === 'youtube'
-                ? 'Videos'
-                : activeFilter === 'article'
-                  ? 'Articles'
-                  : activeFilter === 'link'
-                    ? 'Links'
-                    : 'Unknown'}
+      <div className={`max-w-[1920px] mx-auto flex items-center gap-4 `}>
+        <h1 className="text-2xl font-semibold justify-between text-gray-900 dark:text-gray-200 min-w-0 truncate">
+          {activeFilter === "all"
+            ? "All Notes"
+            : activeFilter === "twitter"
+            ? "Tweets"
+            : activeFilter === "youtube"
+            ? "Videos"
+            : activeFilter === "article"
+            ? "Articles"
+            : activeFilter === "link"
+            ? "Links"
+            : "Unknown"}
         </h1>
+
+        {/* Search Bar - hidden on mobile, visible on desktop */}
+        <div className="hidden sm:flex flex-1 justify-center transition-all duration-300 ease-in-out">
+          <div className="w-full max-w-xl">
+            <SearchBar onSearch={onSearch} />
+          </div>
+        </div>
+
         {/* Desktop Menu */}
         <div className="ml-auto items-center gap-3 hidden md:flex">
           <ThemeToggle />
@@ -108,13 +117,10 @@ export const Navbar = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden mt-2 px-4 py-2 flex flex-col gap-2 text-sm">
-          <div className="flex items-center justify-between">
-            {/* <span className="text-gray-700 dark:text-gray-200">Theme</span> */}
-            <ThemeToggle />
-          </div>
+          <SearchBar onSearch={onSearch} />
+          <ThemeToggle />
           <Button
             variant="secondary"
             className="flex items-center gap-2 px-3 py-1.5 text-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-md"

@@ -13,6 +13,7 @@ import SkeletonNavbar from "../components/ui/SkeletonNavbar";
 import SkeletonSidebar from "../components/ui/SkeletonSidebar";
 import EmptyState from "../components/ui/EmptyState";
 import { Content } from "@/types/content";
+import SearchBar from "../components/SearchBar";
 
 // interface ContentItem {
 //   _id: string;
@@ -32,8 +33,14 @@ const Dashboard = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
     () => window.matchMedia("(max-width: 768px)").matches
   );
-  const { content, loading, error, refreshContent, deleteContent } =
-    useContent();
+  const {
+    content,
+    loading,
+    error,
+    refreshContent,
+    deleteContent,
+    searchContent,
+  } = useContent();
   console.log("content", content);
   const logout = useLogout();
 
@@ -45,6 +52,14 @@ const Dashboard = () => {
   const handleContentAdded = () => {
     setModal((prev) => ({ ...prev, isModalOpen: false }));
     refreshContent();
+  };
+
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      searchContent(query);
+    } else {
+      refreshContent();
+    }
   };
 
   const getSkeleton = () => {
@@ -78,6 +93,7 @@ const Dashboard = () => {
           onLogout={logout}
           isAuthenticated={isAuthenticated}
           isSidebarCollapsed={isSidebarCollapsed}
+          onSearch={handleSearch}
         />
       )}
       <div className="flex flex-1 overflow-hidden pt-[4.5rem]">
