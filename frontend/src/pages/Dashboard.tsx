@@ -13,16 +13,7 @@ import SkeletonNavbar from "../components/ui/SkeletonNavbar";
 import SkeletonSidebar from "../components/ui/SkeletonSidebar";
 import EmptyState from "../components/ui/EmptyState";
 import { Content } from "@/types/content";
-import SearchBar from "../components/SearchBar";
 
-// interface ContentItem {
-//   _id: string;
-//   type: "twitter" | "youtube" | "article";
-//   title: string;
-//   link: string;
-//   tags?: { _id: string; title: string }[];
-//   createdAt: string;
-// }
 
 const Dashboard = () => {
   const { isAuthenticated } = useRecoilValue(authState);
@@ -108,9 +99,8 @@ const Dashboard = () => {
           />
         )}
         <main
-          className={`flex-1 overflow-y-auto p-6 pb-6 ${
-            isSidebarCollapsed ? "ml-16" : "ml-48"
-          } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
+          className={`flex-1 overflow-y-auto p-6 pb-6 ${isSidebarCollapsed ? "ml-16" : "ml-48"
+            } transition-all duration-300 bg-gray-200 dark:bg-gray-800`}
         >
           <div className="min-h-[calc(100vh-4.5rem)] p-6">
             {loading && content.length === 0 ? (
@@ -133,29 +123,6 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 justify-items-center text-center text-gray-900 dark:text-gray-200">
-                {/* {filteredContent.map((item: Content) => {
-                  const cardProps = {
-                    id: item._id,
-                    type: ["twitter", "youtube", "article"].includes(item.type)
-                      ? (item.type as "twitter" | "youtube" | "article")
-                      : "article",
-                    title: item.title,
-                    link: item.link,
-                    tags: item.tags?.map((t: any) => ({
-                      _id: t._id || Math.random().toString(),
-                      title: t.title || "Untagged",
-                    })),
-                    createdAt: item.createdAt || new Date().toISOString(),
-                  };
-
-                  return (
-                    <Card
-                      key={item._id}
-                      {...cardProps}
-                      deleteContent={deleteContent}
-                    />
-                  );
-                })} */}
                 {filteredContent.map((item: Content) => (
                   <Card
                     key={item._id}
